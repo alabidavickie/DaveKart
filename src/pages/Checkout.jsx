@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, getOrders, setOrders } from '../utils/db';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, cartTotal, shippingCost, taxAmount, clearCart } = useCart();
+  const { addToast } = useToast();
   const [amount, setAmount] = useState('');
 
   if (cartItems.length === 0) return <div className="min-h-screen flex items-center justify-center text-xl text-gray-400">Your cart is empty.</div>;
@@ -13,7 +15,7 @@ const Checkout = () => {
   const handlePayment = (e) => {
     e.preventDefault();
     if (Number(amount) !== cartTotal) {
-      alert(`Invalid amount. Please enter exactly ₦${cartTotal.toLocaleString()}`);
+      addToast(`Invalid amount. Please enter exactly ₦${cartTotal.toLocaleString()}`, 'error');
       return;
     }
     
